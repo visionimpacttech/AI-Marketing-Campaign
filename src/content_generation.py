@@ -3,15 +3,13 @@ import numpy as np
 import openai
 import time
 
-# Step 1: Set up your OpenAI API key
-openai.api_key = 'your-openai-api-key'
 
-# Step 2: Load Segmented Data
+openai.api_key = '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'
+
 segmented_data = pd.read_csv('segmented_customer_data.csv')
 print("Segmented Customer Data:")
 print(segmented_data.head())
 
-# Step 3: Generate Marketing Content for Each Segment
 def generate_marketing_content(segment):
     if segment == 0:
         prompt = "Generate a personalized email for frequent buyers of electronics. Offer them a 20% discount."
@@ -42,16 +40,12 @@ time.sleep(1)  # Add 1-second delay to avoid rate-limiting
 
 segmented_data.to_csv('personalized_marketing_content.csv', index=False)
 
-# Step 4: Load additional engagement data
 engagement_data = pd.read_csv('customer_engagement_data.csv')
 
-# Display available columns for debugging
 print("Available columns in engagement_data:", engagement_data.columns)
 
-# Step 5: Merge the datasets
 merged_data = pd.merge(segmented_data, engagement_data, on='customer_id')
 
-# Step 6: Check for missing columns and create them if necessary
 required_columns = ['click_rate', 'open_rate', 'conversion_rate']
 
 for col in required_columns:
@@ -59,7 +53,6 @@ for col in required_columns:
         print(f"Column {col} not found. Creating mock data for {col}.")
         merged_data[col] = np.random.rand(len(merged_data))
 
-# Step 7: Calculate performance metrics
 segment_performance = merged_data.groupby('segment').agg({
     'click_rate': 'mean',
     'open_rate': 'mean',
@@ -69,7 +62,6 @@ segment_performance = merged_data.groupby('segment').agg({
 print("Segment Performance Metrics:")
 print(segment_performance)
 
-# Step 8: Optimize Timing and Channels
 best_time = merged_data.groupby('segment').agg({
     'engagement_time': lambda x: x.value_counts().idxmax() if 'engagement_time' in merged_data.columns else 'No data',
     'platform': lambda x: x.value_counts().idxmax() if 'platform' in merged_data.columns else 'No data'
@@ -78,7 +70,6 @@ best_time = merged_data.groupby('segment').agg({
 print("Optimal Engagement Times and Platforms for Each Segment:")
 print(best_time)
 
-# Step 9: Real-time Monitoring and Adaptation
 def monitor_and_adapt(campaign_data):
     for index, row in campaign_data.iterrows():
         if row['click_rate'] < 0.1:
@@ -89,6 +80,4 @@ def monitor_and_adapt(campaign_data):
         time.sleep(2)  # Simulate delay
 
 monitor_and_adapt(merged_data)
-
-# Step 10: Save final performance report
 merged_data.to_csv('final_campaign_performance.csv', index=False)
